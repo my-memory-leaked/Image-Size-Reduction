@@ -14,6 +14,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
     QString file_path;
+    QString file_name;
     QFile file;
 
 public:
