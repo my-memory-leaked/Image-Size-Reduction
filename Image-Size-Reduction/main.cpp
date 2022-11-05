@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 
+
 #include <QApplication>
 #include <QSize>
 
@@ -16,4 +17,5 @@ int main(int argc, char *argv[])
     w.resize(WINDOW_SIZE);
     w.show();
     return a.exec();
+
 }

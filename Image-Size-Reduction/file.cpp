@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QLabel>
 
+#include "CppRLEEncode.h"
+
 
 File::File(Ui::MainWindow *ui, const QString file_name)
 {
@@ -22,6 +24,8 @@ File::File(Ui::MainWindow *ui, const QString file_name)
 
     ui->OriginalPicture->setPixmap(pixmap);
     ui->OriginalPicture->setMask(pixmap.mask());
+
+
 }
 
 void File::ShowFile()

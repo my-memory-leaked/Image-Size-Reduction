@@ -6,3 +6,7 @@ build-Image-Size-Reduction-Desktop_Qt_6_4_0_MSVC2019_64bit-Debug/
 build-Image-Size-Reduction-Desktop_Qt_6_4_0_MSVC2019_64bit-Release/
 Image-Size-Reduction/debug/
 Image-Size-Reduction/release/
+x64/Debug/
+x64/Release/
+Cpp-Lib/x64/Debug/
+Cpp-Lib/x64/Release/
