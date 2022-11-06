@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CppRLEEncode.h"
 
-
+// TODO chceck if couter is not grater than 255
 void RLEEncode( u8* input, u32 inputSize, u8* output ) {
     u8* inp = input;
     u8* out = output;

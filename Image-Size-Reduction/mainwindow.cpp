@@ -1,11 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "file.h"
-
-
-#include <QFileDialog>
-#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -23,10 +18,13 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    if(!ptr_bmp_file)
+        delete ptr_bmp_file;
 }
 
 
 
+// TODO clean this code below
 void MainWindow::on_OpenFileButton_clicked()
 {
     // Gets pull path of the chosen file
@@ -81,5 +79,13 @@ void MainWindow::on_OpenFileButton_clicked()
    ui->OriginalPicture->setMask(pixmap.mask());
 
 
+
+
+}
+
+
+void MainWindow::on_compressPushButton_clicked()
+{
+    ptr_bmp_file = new BitMap(getFilePath());
 }
 

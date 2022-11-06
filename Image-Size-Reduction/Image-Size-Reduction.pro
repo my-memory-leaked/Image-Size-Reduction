@@ -11,11 +11,13 @@ CONFIG += c++17
 SOURCES += \
     file.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    bmp.cpp
 
 HEADERS += \
     file.h \
-    mainwindow.h
+    mainwindow.h \
+    bmp.h
 
 FORMS += \
     mainwindow.ui

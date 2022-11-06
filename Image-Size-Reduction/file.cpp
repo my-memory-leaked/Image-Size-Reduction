@@ -5,7 +5,7 @@
 #include <QWidget>
 #include <QLabel>
 
-#include "CppRLEEncode.h"
+//#include "CppRLEEncode.h"
 
 
 File::File(Ui::MainWindow *ui, const QString file_name)
