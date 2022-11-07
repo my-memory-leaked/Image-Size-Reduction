@@ -77,6 +77,10 @@ void MainWindow::on_OpenFileButton_clicked()
 
    ui->OriginalPicture->setPixmap(pixmap.scaled(ui->OriginalPicture->height(), ui->OriginalPicture->width(), Qt::KeepAspectRatio));
    ui->OriginalPicture->setMask(pixmap.mask());
+  
+   
+   
+ 
 
 
 

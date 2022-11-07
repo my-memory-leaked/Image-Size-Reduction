@@ -1,9 +1,9 @@
 #include <bmp.h>
 
-#include <fstream>
 
 BitMap::BitMap(const std::string file_path)
 {
+	changeDestFileName(file_path);
 	read(file_path);
 }
 
@@ -62,5 +62,27 @@ bool BitMap::read(const std::string file_path) {
 	fseek( file_ptr, bmp_file_header.data_offset , SEEK_SET );
 	pixel_data = (u8*)calloc( pixel_size, sizeof(u8) );	// better to use calloc
 	fread(pixel_data, pixel_size, 1, file_ptr);
+
+}
+
+
+/// <summary> Adds _resized string to destination file
+/// 
+/// </summary>
+/// <param name="file_path"></param>
+void BitMap::changeDestFileName( const std::string file_path ) {
+	auto dot_ptr = file_path.find_last_of(".");
+	file_destination = file_path;
+	file_destination.insert( dot_ptr, DESTINATION_FILE_ADDON );
+}
+
+
+//bool BitMap::write(const std::string file_path) {
+
+
+void BitMap::compressRLE()
+{
+	// TODO
+	//RLECompression::RLE_Compress(&bmp_file_header.data_offset,  );		
 
 }

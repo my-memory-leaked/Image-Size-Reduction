@@ -67,6 +67,7 @@ public:
     BMPColorHeader bmp_color_header;    // Contains bmp color info
     u8* pixel_data;                           //
 
+    std::string file_destination;       // changed filename to dest file
 
     RLECompression rle_compression;     // Compresses bmp object
 
@@ -77,6 +78,10 @@ public:
     bool read(const std::string file_path);
 
 
+    void changeDestFileName(const std::string file_path);
+
+
+    void compressRLE();
 
 private:
 
