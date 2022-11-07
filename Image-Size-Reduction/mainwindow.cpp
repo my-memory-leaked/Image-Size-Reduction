@@ -90,6 +90,9 @@ void MainWindow::on_OpenFileButton_clicked()
 
 void MainWindow::on_compressPushButton_clicked()
 {
-    ptr_bmp_file = new BitMap(getFilePath());
+    ptr_bmp_file = new BitMap(getFilePath()); // old bitmap
+
+
+
 }
 

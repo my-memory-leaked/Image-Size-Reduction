@@ -7,6 +7,9 @@
 
 #include "RLECompression.h"
 
+
+#include <vector>
+
 typedef struct  tagBITMAPFILEHEADER {
     u16 file_type;          // Type of file BM is 0x4D42
     u32 file_size;          // Size of file in bytes
@@ -65,12 +68,19 @@ public:
     BITMAPFILEHEADER bmp_file_header;   // Contains bmp file info
     BITMAPINFOHEADER bmp_info_header;   // Contains bmp header info
     BMPColorHeader bmp_color_header;    // Contains bmp color info
+
+
     u8* pixel_data;                           //
+    u32 m_pixelSize;	// size of pixels in bytes
+
 
     std::string file_destination;       // changed filename to dest file
 
-    RLECompression rle_compression;     // Compresses bmp object
+    std::vector<u8> m_pixels;
 
+    RLECompression rle_compression;     // Compresses bmp object
+    u8* m_pallet;      // contains the beginning of file
+    u32 m_palletSize;
 
     BitMap(const std::string file_path);
     ~BitMap();
@@ -82,6 +92,8 @@ public:
 
 
     void compressRLE();
+
+    bool write();
 
 private:
 
