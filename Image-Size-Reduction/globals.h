@@ -15,3 +15,14 @@ typedef int64_t i64;
 #define  DESTINATION_FILE_ADDON             "_compressed"
 #define  CPP_DLL_RLE_LIBRARY_PATH           "X:/Repositories/Image-Size-Reduction/x64/Release/CppRLEEncode.dll"
 #define  RLE_COMPRESSION_FUNCTION_NAME_DLL  "RLEEncode"
+
+
+/// File reading attributes
+#define READ_BINARY			"rb"
+#define WRITE_BINARY		"wb"
+
+
+
+
+
+

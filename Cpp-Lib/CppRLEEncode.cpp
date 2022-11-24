@@ -1,26 +1,46 @@
 #include "pch.h"
 #include "CppRLEEncode.h"
+#include <stdlib.h>
 
 // TODO chceck if couter is not grater than 255
-void RLEEncode( u8* input, u32 inputSize, u8* output ) {
-    u8* inp = input;
-    u8* out = output;
-    u8* current_el = new u8;   // current elemed used to comparison
-    u8 repetition_counter = 0; // number of repeted elements
+void RLEEncode( u8* input, u8* output, u32 &outputSize, u16 width ) {
 
-    u32 itr = 0;
-    for ( u32 i = 0; i < inputSize; i++, itr++ ) {
-        *current_el = inp[i];   // new curreent element
-        repetition_counter = 1; // we got first el
+	u8* inp = input;	// input buffer
+	u8* out = output;	// output buffer
 
-        while ( *current_el == inp[i + 1] ) {   // if element repets
-            repetition_counter++;
-            i++;
-        }   // while ( *current_el == inp[i + 1] )
+	u8 pixel;	// current pixel used in comparison
+	u32 currentElement = 0;
+	u32 repetitionCounter = 0;	// Counts repeating elements
+	u32 p_totalCompressedDataSize = outputSize;	// total size of compressed data
+	u16 lineLength = 0;
+	bool uncompressed;
+	
+	for (u32 X = 0; X < width; X++)
+	{
+		uncompressed = true;
 
-        out[itr] = repetition_counter;  // constructing output
-        out[++itr] = *current_el;       // could be reversed
-    }   // for ( u32 i = 0; i < inputSize; i++, itr++ )
+		while (uncompressed)
+		{
+			repetitionCounter = 0;
+			pixel = inp[currentElement]; // 1 pixel
+			while ( (currentElement < width)
+					&& (pixel == inp[currentElement]) && (repetitionCounter < 255))
+			{
+				repetitionCounter++;
+				currentElement++;
+				X++;
+			}
+			if (currentElement == width )	//if end of width
+				uncompressed = false;
 
-    delete current_el;
+			out[p_totalCompressedDataSize++] = repetitionCounter;
+			out[p_totalCompressedDataSize++] = pixel;
+
+			lineLength += 2;
+		}
+
+	}
+
+	outputSize = p_totalCompressedDataSize;
+
 }   // RLEEncode( u8* input, u32 inputSize, u8* output )

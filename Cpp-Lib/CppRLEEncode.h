@@ -15,4 +15,4 @@ typedef uint32_t		u32;
 /// <param name="inputSize"></param> Size of inpot to be encoded
 /// <param name="output"></param> Output pointer to write encoded elements
 /// 
-extern "C" CPP_LIBRARY_API void RLEEncode( u8 * input, u32 inputSize, u8 * output );
+extern "C" CPP_LIBRARY_API void RLEEncode(u8 * input, u8 * output, u32 & outputSize, u16 width);

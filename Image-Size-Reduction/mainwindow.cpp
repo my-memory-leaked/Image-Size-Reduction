@@ -79,8 +79,7 @@ void MainWindow::on_OpenFileButton_clicked()
    ui->OriginalPicture->setMask(pixmap.mask());
   
    
-   
- 
+
 
 
 
@@ -93,6 +92,19 @@ void MainWindow::on_compressPushButton_clicked()
     ptr_bmp_file = new BitMap(getFilePath()); // old bitmap
 
 
+    QPixmap resizedPixmap;
+    resizedPixmap.load(ptr_bmp_file->getFileDestination().data());
+
+
+    QWidget resizedWidget;
+
+    QSize size = resizedWidget.frameSize();
+    resizedPixmap.scaled(ui->ResizedPicture->height(), ui->ResizedPicture->width());
+
+
+
+    ui->ResizedPicture->setPixmap(resizedPixmap.scaled(ui->ResizedPicture->height(), ui->ResizedPicture->width(), Qt::KeepAspectRatio));
+    ui->ResizedPicture->setMask(resizedPixmap.mask());
 
 }
 

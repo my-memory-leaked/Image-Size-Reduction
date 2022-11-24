@@ -7,8 +7,13 @@
 
 #include "RLECompression.h"
 
+/// Size of whole file header in bytes
+#define SIZE_OF_FILE_HEADER         54    
+#define SIZE_OF_BMP_FILE_HEADER     14
 
-#include <vector>
+/// The 1024 computer kilo prefix
+#define PREFIX_KILO                 1024
+
 
 typedef struct  tagBITMAPFILEHEADER {
     u16 file_type;          // Type of file BM is 0x4D42
@@ -62,30 +67,54 @@ typedef struct tagBMPColorHeader {
 } BMPColorHeader, * PTRBMPColorHeader;
 
 
+
+typedef struct PALETTEENTRY {
+    u8 peRed;
+    u8 peGreen;
+    u8 peBlue;
+    u8 peFlags;
+} PALLETTE;
+
+
 class BitMap
 {
+    /// Contains bmp file info
+    BITMAPFILEHEADER p_bmpFileHeader;   
+
+    /// Contains bmp header info
+    BITMAPINFOHEADER p_bmpInfoHeader;   
+
+    /// Contains the beginning of file color pallet
+    u8* p_pallet;    
+
+    /// Size of pallet in bytes
+    u32 m_palletSize = 0;
+
+    /// Array of pixel byte data 
+    u8* p_pixelByteData;
+
+    /// Size of pixels in bytes
+    u32 p_pixelSize = 0;	
+
+    /// Pointer do compressed data
+    u8* p_compressedData;
+
+    /// Total size of compressed data
+    u32 p_totalCompressedDataSize = 0;
+
+    /// Changed filename to one signalising compression
+    std::string p_fileDestination;
+
+
+
 public:
-    BITMAPFILEHEADER bmp_file_header;   // Contains bmp file info
-    BITMAPINFOHEADER bmp_info_header;   // Contains bmp header info
-    BMPColorHeader bmp_color_header;    // Contains bmp color info
 
-
-    u8* pixel_data;                           //
-    u32 m_pixelSize;	// size of pixels in bytes
-
-
-    std::string file_destination;       // changed filename to dest file
-
-    std::vector<u8> m_pixels;
-
-    RLECompression rle_compression;     // Compresses bmp object
-    u8* m_pallet;      // contains the beginning of file
-    u32 m_palletSize;
 
     BitMap(const std::string file_path);
     ~BitMap();
 
     bool read(const std::string file_path);
+    std::string getFileDestination();
 
 
     void changeDestFileName(const std::string file_path);
@@ -93,13 +122,14 @@ public:
 
     void compressRLE();
 
-    bool write();
+    void writeCompressedBMP();
+
+    int RLE(FILE* ptrIn, FILE* ptrOut);
 
 private:
 
 
 
 };
-
 
 
