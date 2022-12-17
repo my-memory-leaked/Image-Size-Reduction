@@ -4,12 +4,8 @@ using namespace kp;
 BitMap::BitMap(const std::string& file_path)
 {
 
-#ifdef ASM
-	p_compressionFunction = (RLEEncode)GetProcAddress(LoadLibrary(TEXT(ASM_DLL_RLE_LIBRARY_PATH)),
+	AsmRLEEncode = (RLEEncode)GetProcAddress(LoadLibrary(TEXT(ASM_DLL_RLE_LIBRARY_PATH)),
 	                                                     RLE_COMPRESSION_FUNCTION_NAME_DLL);
-#else
-	p_compressionFunction = CppRLEEncode;
-#endif
 
 	changeDestFileName(file_path);
 	read(file_path);
@@ -201,12 +197,17 @@ void BitMap::compressRLE()
 	if (padding != 0) 
 		padding = 4 - padding;*/
 
-	for (u16 Y = 0; Y < p_bmpInfoHeader.height; Y++)
+	for (u32 Y = 0; Y < p_bmpInfoHeader.height; Y++)
 	{
 		lineLengths[Y] = 0;
-		for (u16 X = 0; X < p_bmpInfoHeader.width; X++)
+		for (u32 X = 0; X < p_bmpInfoHeader.width; X++)
 		{
-			p_compressionFunction(inp, out, lineLengths, p_totalCompressedDataSize, currentElement, p_bmpInfoHeader.width, Y, X);
+
+#ifdef ASM
+			AsmRLEEncode(inp, out, lineLengths, p_totalCompressedDataSize, currentElement, p_bmpInfoHeader.width, Y, X);
+#else
+			CppRLEEncode(inp, out, lineLengths, p_totalCompressedDataSize, currentElement, p_bmpInfoHeader.width, Y, X);
+#endif
 
 			//bool uncompressed = true;
 
