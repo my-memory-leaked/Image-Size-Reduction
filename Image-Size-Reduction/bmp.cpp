@@ -1,8 +1,16 @@
 #include <bmp.h>
+using namespace kp;
 
-
-BitMap::BitMap(const std::string file_path)
+BitMap::BitMap(const std::string& file_path)
 {
+
+#ifdef ASM
+	p_compressionFunction = (RLEEncode)GetProcAddress(LoadLibrary(TEXT(ASM_DLL_RLE_LIBRARY_PATH)),
+	                                                     RLE_COMPRESSION_FUNCTION_NAME_DLL);
+#else
+	p_compressionFunction = CppRLEEncode;
+#endif
+
 	changeDestFileName(file_path);
 	read(file_path);
 
@@ -29,17 +37,15 @@ BitMap::~BitMap() {
 }
 
 // check transparent images
-bool BitMap::read(const std::string file_path) {
-	FILE* ptrFileInput;
+bool BitMap::read(const std::string& file_path)
+{
 
-	ptrFileInput = fopen(file_path.c_str(), READ_BINARY);
+	FILE* ptrFileInput;
+	if(fopen_s(&ptrFileInput, file_path.c_str(), READ_BINARY))
+		throw std::invalid_argument("Input file opening failed");
 
 	if (!ptrFileInput)	// When there is no file or bad filename
-	{
 		throw std::bad_alloc();
-		return false;
-	}
-	
 
 	// TODO check if it is windows file
 	// also add if statements below
@@ -71,7 +77,7 @@ bool BitMap::read(const std::string file_path) {
 	//	return false;
 	//}
 
-	if ((p_bmpInfoHeader.size != 0x28) || (p_bmpFileHeader.file_type != 0x4d42))
+	if (p_bmpInfoHeader.size != 0x28 || p_bmpFileHeader.file_type != 0x4d42)
 		return false;               // others than windows bitmaps are not supported
 	if (p_bmpInfoHeader.bit_count == 24)
 		return false;               // 24 bit bitmaps cannot be compressed
@@ -81,7 +87,7 @@ bool BitMap::read(const std::string file_path) {
 
 	// Skipping data from the beginning to the start offset
 	p_pallet = (u8*)malloc(p_bmpFileHeader.data_offset - SIZE_OF_FILE_HEADER);
-	u32 it = 0;
+	u64 it;
 	for (it = 0; it < (p_bmpFileHeader.data_offset - SIZE_OF_FILE_HEADER) / PREFIX_KILO; it++)
 	{
 		// Read first kB
@@ -110,30 +116,34 @@ bool BitMap::read(const std::string file_path) {
 	fread(p_pixelByteData, sizeof(u8), p_pixelSize, ptrFileInput);
 
 	fclose(ptrFileInput);
+	return true;
 }
 
 
-std::string BitMap::getFileDestination(){
+std::string BitMap::getFileDestination()
+{
     return p_fileDestination;
 }
 
 
-void BitMap::changeDestFileName( const std::string file_path ) {
-	auto dot_ptr = file_path.find_last_of( '.' );
+void BitMap::changeDestFileName( const std::string& file_path )
+{
+	const auto dot_ptr = file_path.find_last_of( '.' );
 	p_fileDestination = file_path;
 	p_fileDestination.insert( dot_ptr, DESTINATION_FILE_ADDON );
 }
 
-
-void BitMap::writeCompressedBMP() {
-
+void BitMap::writeCompressedBMP()
+{
 	// Update the header info
 	p_bmpInfoHeader.size_image = p_totalCompressedDataSize;
 	p_bmpFileHeader.file_size = p_bmpFileHeader.data_offset + p_totalCompressedDataSize;
 	p_bmpInfoHeader.compression = 0x0001;
 
 	// Open output file
-	FILE* ptrFileOutput = fopen( p_fileDestination.c_str(), WRITE_BINARY);
+	FILE* ptrFileOutput;
+	if(fopen_s(&ptrFileOutput, p_fileDestination.c_str(), WRITE_BINARY))
+		throw std::invalid_argument("Output file creation failed");
 
 	// Write file header
 	fwrite(&p_bmpFileHeader.file_type, sizeof(u16), 1, ptrFileOutput);
@@ -176,51 +186,49 @@ void BitMap::writeCompressedBMP() {
 
 void BitMap::compressRLE()
 {
-	p_compressedData = (u8*)malloc( (p_pixelSize * sizeof(u8)) * 2 );
+	p_compressedData = (u8*)malloc(p_pixelSize * sizeof(u8) * 2);
 
-	u8* inp = p_pixelByteData;	// input buffer
+	const u8* inp = p_pixelByteData;	// input buffer
 	u8* out = p_compressedData;	// output buffer
+	const auto lineLengths = new u16[p_bmpInfoHeader.height];	// Array of compressed line lengths
 
-	u16* LineLengths = new u16[p_bmpInfoHeader.height];	// Array of compressed line lengths
-	u8 pixel;	// current pixel used in comparison
-	u32 currentElement = 0;
-	u32 repetitionCounter = 0;	// Counts repeating elements
 	p_totalCompressedDataSize = 0;	// total size of compressed data
-	bool uncompressed;	
+	u32 currentElement = 0;
 
 	// Padding will be added later
-	const int paddingAmount = ((4 - (p_bmpInfoHeader.width * 3) % 4) % 4);
-	int padding = (p_bmpInfoHeader.width % 4);
-	if (padding != 0) padding = 4 - padding;
+	/*const int paddingAmount = (4 - (p_bmpInfoHeader.width * 3) % 4) % 4;
+	u32 padding = p_bmpInfoHeader.width % 4;
+	if (padding != 0) 
+		padding = 4 - padding;*/
 
-	for (u32 Y = 0; Y < p_bmpInfoHeader.height; Y++)
+	for (u16 Y = 0; Y < p_bmpInfoHeader.height; Y++)
 	{
-		LineLengths[Y] = 0;
-		for (u32 X = 0; X < p_bmpInfoHeader.width; X++)
+		lineLengths[Y] = 0;
+		for (u16 X = 0; X < p_bmpInfoHeader.width; X++)
 		{
-			uncompressed = true;
+			p_compressionFunction(inp, out, lineLengths, p_totalCompressedDataSize, currentElement, p_bmpInfoHeader.width, Y, X);
 
-			while (uncompressed)
-			{
-				repetitionCounter = 0;
-				pixel = inp[currentElement]; // 1 pixel
-				while ( (currentElement < ((p_bmpInfoHeader.width) + (Y * p_bmpInfoHeader.width)) ) 
-						 && (pixel == inp[currentElement]) && (repetitionCounter < 255))
-				{
-					repetitionCounter++;
-					currentElement++;
-					X++;
-				}
-				if (currentElement == (p_bmpInfoHeader.width + (Y * p_bmpInfoHeader.width)) )	//if end of width
-					uncompressed = false;
+			//bool uncompressed = true;
 
-				out[p_totalCompressedDataSize++] = repetitionCounter;
-				out[p_totalCompressedDataSize++] = pixel;
+			//while (uncompressed)
+			//{
+			//	u8 repetitionCounter = 0;
+			//	const u8 pixel = inp[currentElement]; // 1 pixel
+			//	while ( currentElement < p_bmpInfoHeader.width + Y * p_bmpInfoHeader.width 
+			//			 && pixel == inp[currentElement] && repetitionCounter < 255)
+			//	{
+			//		repetitionCounter++;
+			//		currentElement++;
+			//		X++;
+			//	}
+			//	if (currentElement == (p_bmpInfoHeader.width + (Y * p_bmpInfoHeader.width)) )	//if end of width
+			//		uncompressed = false;
 
-				LineLengths[Y] += 2;
-			}
+			//	out[p_totalCompressedDataSize++] = repetitionCounter;
+			//	out[p_totalCompressedDataSize++] = pixel;
 
-			
+			//	lineLengths[Y] += 2;
+			//}
 		}
 		out[p_totalCompressedDataSize++] = 0x00;
 
@@ -232,7 +240,7 @@ void BitMap::compressRLE()
 		{
 			out[p_totalCompressedDataSize++] = 0x00;
 		}
-		LineLengths[Y] += 2;
+		lineLengths[Y] += 2;
 		// EOL 
 
 	}
@@ -240,5 +248,5 @@ void BitMap::compressRLE()
 	//// TODO Add compression rate later
 	////printf(stdout, "Compression ratio = %f%%\n", 100.0 - (image->startOffset + total) * 100.0 / image->size);
 
-	delete[] LineLengths;
+	delete[] lineLengths;
 }

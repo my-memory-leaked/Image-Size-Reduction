@@ -8,7 +8,7 @@
 //#include "CppRLEEncode.h"
 
 
-File::File(Ui::MainWindow *ui, const QString file_name)
+File::File(const Ui::MainWindow *ui, const QString file_name)
 {
     pixmap.load(file_name);
     //QLabel* lbl = new QLabel(this);
@@ -17,7 +17,7 @@ File::File(Ui::MainWindow *ui, const QString file_name)
 
 
     //QSize size = qApp->screens()[0]->size();
-    QWidget widget;
+    const QWidget widget;
 
     QSize size = widget.frameSize();
 

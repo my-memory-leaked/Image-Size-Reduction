@@ -8,5 +8,7 @@ Image-Size-Reduction/debug/
 Image-Size-Reduction/release/
 x64/Debug/
 x64/Release/
-Cpp-Lib/x64/Debug/
-Cpp-Lib/x64/Release/
+AsmRLEEncode/x64/Debug/
+AsmRLEEncode/x64/Release/
+CppRLEEncode/x64/Debug/
+CppRLEEncode/x64/Release/

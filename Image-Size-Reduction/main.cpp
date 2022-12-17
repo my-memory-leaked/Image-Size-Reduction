@@ -9,13 +9,11 @@
 
 static QSize WINDOW_SIZE(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
     w.resize(WINDOW_SIZE);
     w.show();
-    return a.exec();
-
+    return QApplication::exec();
 }

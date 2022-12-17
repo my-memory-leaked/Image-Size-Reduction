@@ -2,17 +2,9 @@
 #include "ui_mainwindow.h"
 
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-
-
-
-
-
 }
 
 MainWindow::~MainWindow()
@@ -51,11 +43,7 @@ void MainWindow::on_OpenFileButton_clicked()
 
     ui->OpenedFileLabel->setText(file_name); // Change the label into filename
 
-
-
     // Wszystko wyżej dobrze
-
-
 
     QPixmap pixmap;
 
@@ -64,47 +52,30 @@ void MainWindow::on_OpenFileButton_clicked()
    //QLabel* lbl = new QLabel(this);
        /** set content to show center in label */
 
-
-
    //QSize size = qApp->screens()[0]->size();
-   QWidget widget;
+    const QWidget widget;
 
-   QSize size = widget.frameSize();
-   pixmap.scaled(ui->OriginalPicture->height(), ui->OriginalPicture->width());
+    pixmap.scaled(ui->OriginalPicture->height(), ui->OriginalPicture->width());
 
 
    //label->setPixmap(p.scaled(w,h,Qt::KeepAspectRatio));
 
    ui->OriginalPicture->setPixmap(pixmap.scaled(ui->OriginalPicture->height(), ui->OriginalPicture->width(), Qt::KeepAspectRatio));
    ui->OriginalPicture->setMask(pixmap.mask());
-  
-   
-
-
-
-
-
 }
 
 
 void MainWindow::on_compressPushButton_clicked()
 {
-    ptr_bmp_file = new BitMap(getFilePath()); // old bitmap
-
+    ptr_bmp_file = new kp::BitMap(getFilePath()); // old bitmap
 
     QPixmap resizedPixmap;
     resizedPixmap.load(ptr_bmp_file->getFileDestination().data());
 
-
     QWidget resizedWidget;
 
-    QSize size = resizedWidget.frameSize();
     resizedPixmap.scaled(ui->ResizedPicture->height(), ui->ResizedPicture->width());
-
-
 
     ui->ResizedPicture->setPixmap(resizedPixmap.scaled(ui->ResizedPicture->height(), ui->ResizedPicture->width(), Qt::KeepAspectRatio));
     ui->ResizedPicture->setMask(resizedPixmap.mask());
-
 }
-

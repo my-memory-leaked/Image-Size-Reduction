@@ -9,12 +9,8 @@
 
 #include "globals.h"
 #include "RLECompression.h"
-
 #include "bmp.h"
-
 #include "file.h"   // should be removed
-
-
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,13 +24,13 @@ class MainWindow : public QMainWindow
     QString file_name;
     QFile file;
 
-    BitMap* ptr_bmp_file; // bmp file to compress
+    kp::BitMap* ptr_bmp_file; // bmp file to compress
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
 
-    std::string getFilePath() { return file_path.toStdString(); }
+    [[nodiscard]] std::string getFilePath() const { return file_path.toStdString(); }
 
 private slots:
 

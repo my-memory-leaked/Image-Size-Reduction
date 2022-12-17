@@ -1,0 +1,2 @@
+LIBRARY AsmRLEEncode
+EXPORTS RLEEncode
