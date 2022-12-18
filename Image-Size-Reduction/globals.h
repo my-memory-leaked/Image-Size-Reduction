@@ -13,7 +13,7 @@ typedef int16_t i16;
 typedef int32_t i32;
 typedef int64_t i64;
 
-//#define ASM
+#define ASM
 
 #define  DESTINATION_FILE_ADDON             "_compressed"
 #define  RLE_COMPRESSION_FUNCTION_NAME_DLL  "RLEEncode"

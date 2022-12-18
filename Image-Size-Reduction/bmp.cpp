@@ -186,7 +186,6 @@ void BitMap::compressRLE()
 
 	const u8* inp = p_pixelByteData;	// input buffer
 	u8* out = p_compressedData;	// output buffer
-	const auto lineLengths = new u16[p_bmpInfoHeader.height];	// Array of compressed line lengths
 
 	p_totalCompressedDataSize = 0;	// total size of compressed data
 	u32 currentElement = 0;
@@ -199,37 +198,15 @@ void BitMap::compressRLE()
 
 	for (u32 Y = 0; Y < p_bmpInfoHeader.height; Y++)
 	{
-		lineLengths[Y] = 0;
 		for (u32 X = 0; X < p_bmpInfoHeader.width; X++)
 		{
 
 #ifdef ASM
-			AsmRLEEncode(inp, out, lineLengths, p_totalCompressedDataSize, currentElement, X, p_bmpInfoHeader.width, Y);
+			AsmRLEEncode(inp, out, p_totalCompressedDataSize, currentElement, X, p_bmpInfoHeader.width, Y);
 #else
-			CppRLEEncode(inp, out, lineLengths, p_totalCompressedDataSize, currentElement, X, p_bmpInfoHeader.width, Y);
+			CppRLEEncode(inp, out, p_totalCompressedDataSize, currentElement, X, p_bmpInfoHeader.width, Y);
 #endif
 
-			//bool uncompressed = true;
-
-			//while (uncompressed)
-			//{
-			//	u8 repetitionCounter = 0;
-			//	const u8 pixel = inp[currentElement]; // 1 pixel
-			//	while ( currentElement < p_bmpInfoHeader.width + Y * p_bmpInfoHeader.width 
-			//			 && pixel == inp[currentElement] && repetitionCounter < 255)
-			//	{
-			//		repetitionCounter++;
-			//		currentElement++;
-			//		X++;
-			//	}
-			//	if (currentElement == (p_bmpInfoHeader.width + (Y * p_bmpInfoHeader.width)) )	//if end of width
-			//		uncompressed = false;
-
-			//	out[p_totalCompressedDataSize++] = repetitionCounter;
-			//	out[p_totalCompressedDataSize++] = pixel;
-
-			//	lineLengths[Y] += 2;
-			//}
 		}
 		out[p_totalCompressedDataSize++] = 0x00;
 
@@ -241,13 +218,10 @@ void BitMap::compressRLE()
 		{
 			out[p_totalCompressedDataSize++] = 0x00;
 		}
-		lineLengths[Y] += 2;
 		// EOL 
-
 	}
 
 	//// TODO Add compression rate later
 	////printf(stdout, "Compression ratio = %f%%\n", 100.0 - (image->startOffset + total) * 100.0 / image->size);
 
-	delete[] lineLengths;
 }
