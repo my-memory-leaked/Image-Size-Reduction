@@ -192,10 +192,10 @@ void BitMap::compressRLE()
 	u32 currentElement = 0;
 
 	// Padding will be added later
-	/*const int paddingAmount = (4 - (p_bmpInfoHeader.width * 3) % 4) % 4;
-	u32 padding = p_bmpInfoHeader.width % 4;
-	if (padding != 0) 
-		padding = 4 - padding;*/
+	//const int paddingAmount = (4 - (p_bmpInfoHeader.width * 3) % 4) % 4;
+	//u32 padding = p_bmpInfoHeader.width % 4;
+	//if (padding != 0) 
+	//	padding = 4 - padding;
 
 	for (u32 Y = 0; Y < p_bmpInfoHeader.height; Y++)
 	{
@@ -204,9 +204,9 @@ void BitMap::compressRLE()
 		{
 
 #ifdef ASM
-			AsmRLEEncode(inp, out, lineLengths, p_totalCompressedDataSize, currentElement, p_bmpInfoHeader.width, Y, X);
+			AsmRLEEncode(inp, out, lineLengths, p_totalCompressedDataSize, currentElement, X, p_bmpInfoHeader.width, Y);
 #else
-			CppRLEEncode(inp, out, lineLengths, p_totalCompressedDataSize, currentElement, p_bmpInfoHeader.width, Y, X);
+			CppRLEEncode(inp, out, lineLengths, p_totalCompressedDataSize, currentElement, X, p_bmpInfoHeader.width, Y);
 #endif
 
 			//bool uncompressed = true;
