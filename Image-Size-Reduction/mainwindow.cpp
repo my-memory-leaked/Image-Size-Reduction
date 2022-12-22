@@ -29,7 +29,7 @@ void MainWindow::on_OpenFileButton_clicked()
 
     file_path = QFileDialog::getOpenFileName(this,
                                              tr("Open File"),
-                                             "C:/Users/pisek/Documents/Test dla apki",
+                                             "../Image-Size-Reduction/Images/jaruszek_paduszek.bmp",
                                              tr("Image Files (*.png *.jpg *.bmp)"));
 
     // EOF To reduce time

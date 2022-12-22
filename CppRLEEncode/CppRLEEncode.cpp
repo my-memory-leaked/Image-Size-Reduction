@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CppRLEEncode.h"
 
-void CppRLEEncode(const u8* input, u8* output, u32 &outputSize, u32& currentElement, u32& X, const u32 width, const u32 Y)
+void CppRLEEncode(const u8* input, u8* output, u64& outputSize, u64& currentElement, u64& X, const u64 width, const u64 Y)
 {
 	bool uncompressed = true;
 

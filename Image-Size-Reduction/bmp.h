@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include "CppRLEEncode.h"
 
-typedef void(_stdcall* RLEEncode)(const u8*, u8*, u32&, u32&, u32&, u32, u32);
+typedef void(_stdcall* RLEEncode)(const u8*, u8*, u64&, u64&, u64&, u64, u64);
 
 /// Size of whole file header in bytes
 #define SIZE_OF_FILE_HEADER         54    
@@ -99,7 +99,7 @@ namespace kp
 	    u8* p_compressedData;
 
 	    /// Total size of compressed data
-	    u32 p_totalCompressedDataSize = 0;
+	    u64 p_totalCompressedDataSize = 0;
 
 	    /// Changed filename to one signalizing compression
 	    std::string p_fileDestination;

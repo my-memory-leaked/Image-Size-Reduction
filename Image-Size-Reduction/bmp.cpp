@@ -178,7 +178,6 @@ void BitMap::writeCompressedBMP()
 	fclose(ptrFileOutput);
 
 }
- 
 
 void BitMap::compressRLE()
 {
@@ -188,7 +187,7 @@ void BitMap::compressRLE()
 	u8* out = p_compressedData;	// output buffer
 
 	p_totalCompressedDataSize = 0;	// total size of compressed data
-	u32 currentElement = 0;
+	u64 currentElement = 0;
 
 	// Padding will be added later
 	//const int paddingAmount = (4 - (p_bmpInfoHeader.width * 3) % 4) % 4;
@@ -196,9 +195,9 @@ void BitMap::compressRLE()
 	//if (padding != 0) 
 	//	padding = 4 - padding;
 
-	for (u32 Y = 0; Y < p_bmpInfoHeader.height; Y++)
+	for (u64 Y = 0; Y < p_bmpInfoHeader.height; Y++)
 	{
-		for (u32 X = 0; X < p_bmpInfoHeader.width; X++)
+		for (u64 X = 0; X < p_bmpInfoHeader.width; X++)
 		{
 
 #ifdef ASM
