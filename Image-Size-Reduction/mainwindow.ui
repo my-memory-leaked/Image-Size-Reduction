@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>720</width>
-    <height>475</height>
+    <width>908</width>
+    <height>454</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -79,14 +79,85 @@
      <string/>
     </property>
    </widget>
+   <widget class="QSlider" name="threadNumVerticalSlider">
+    <property name="geometry">
+     <rect>
+      <x>744</x>
+      <y>120</y>
+      <width>16</width>
+      <height>160</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>64</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="threadInfNumLabel">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>280</y>
+      <width>71</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Threads number:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="threadNumberLabel">
+    <property name="geometry">
+     <rect>
+      <x>750</x>
+      <y>280</y>
+      <width>37</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="compressionTimeLabel">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>340</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Compression time:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="compressionTimeElapsedLabel">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>370</y>
+      <width>37</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>720</width>
-     <height>22</height>
+     <width>908</width>
+     <height>17</height>
     </rect>
    </property>
   </widget>

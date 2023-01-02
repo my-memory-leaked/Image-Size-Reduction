@@ -1,11 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <thread>
 
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->threadNumVerticalSlider->setSliderPosition(std::thread::hardware_concurrency());
 }
+
 
 MainWindow::~MainWindow()
 {
@@ -20,62 +23,48 @@ MainWindow::~MainWindow()
 void MainWindow::on_OpenFileButton_clicked()
 {
     // Gets pull path of the chosen file
-    //file_path = QFileDialog::getOpenFileName(this,
-     //                                        tr("Open File"),
-       //                                      "C://",
-         //                                    tr("Image Files (*.png *.jpg *.bmp)"));
-
-    // To reduce time
-
-    file_path = QFileDialog::getOpenFileName(this,
+    filePath = QFileDialog::getOpenFileName(this,
                                              tr("Open File"),
-                                             "../Image-Size-Reduction/Images/jaruszek_paduszek.bmp",
-                                             tr("Image Files (*.png *.jpg *.bmp)"));
-
-    // EOF To reduce time
-
+                                             "../Image-Size-Reduction/Images",
+                                             tr("Image Files (*.bmp)"));
     // Pop up after file selection
-    QMessageBox::information(this,
-                             "Information", "Selected file: " + file_path);
+    if(!filePath.isEmpty())
+        QMessageBox::information(this,
+                                 "Information", "Selected file: " + filePath);
 
     // Cuts out the filename
-    file_name = file_path.section("/",-1,-1);
+    fileName = filePath.section("/",-1,-1);
 
-    ui->OpenedFileLabel->setText(file_name); // Change the label into filename
+    ui->OpenedFileLabel->setText(fileName); // Change the label into filename
 
-    // Wszystko wyżej dobrze
+    QPixmap orgPicPixmap;
+    orgPicPixmap.load(filePath);
+    orgPicPixmap.scaled(ui->OriginalPicture->height(), ui->OriginalPicture->width());
 
-    QPixmap pixmap;
+    ui->OriginalPicture->setPixmap(orgPicPixmap.scaled(ui->OriginalPicture->height(), ui->OriginalPicture->width(), Qt::KeepAspectRatio));
+    ui->OriginalPicture->setMask(orgPicPixmap.mask());
 
-
-   pixmap.load(file_path);
-   //QLabel* lbl = new QLabel(this);
-       /** set content to show center in label */
-
-   //QSize size = qApp->screens()[0]->size();
-    const QWidget widget;
-
-    pixmap.scaled(ui->OriginalPicture->height(), ui->OriginalPicture->width());
-
-
-   //label->setPixmap(p.scaled(w,h,Qt::KeepAspectRatio));
-
-   ui->OriginalPicture->setPixmap(pixmap.scaled(ui->OriginalPicture->height(), ui->OriginalPicture->width(), Qt::KeepAspectRatio));
-   ui->OriginalPicture->setMask(pixmap.mask());
 }
 
 
 void MainWindow::on_compressPushButton_clicked()
 {
+    double compressionTimeStart = GetTickCount();
     ptr_bmp_file = new kp::BitMap(getFilePath()); // old bitmap
+    double timeElapsed = GetTickCount() - compressionTimeStart;
+    ui->compressionTimeElapsedLabel->setText(QString::number(timeElapsed) + " ms");
 
     QPixmap resizedPixmap;
     resizedPixmap.load(ptr_bmp_file->getFileDestination().data());
-
-    QWidget resizedWidget;
-
     resizedPixmap.scaled(ui->ResizedPicture->height(), ui->ResizedPicture->width());
 
     ui->ResizedPicture->setPixmap(resizedPixmap.scaled(ui->ResizedPicture->height(), ui->ResizedPicture->width(), Qt::KeepAspectRatio));
     ui->ResizedPicture->setMask(resizedPixmap.mask());
 }
+
+
+void MainWindow::on_threadNumVerticalSlider_valueChanged(int value)
+{
+    ui->threadNumberLabel->setText(QString::number(value));
+}
+

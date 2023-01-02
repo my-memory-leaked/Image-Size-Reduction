@@ -3,7 +3,7 @@
 #include <globals.h>
 #include <string>
 #include <stdexcept>
-#include "CppRLEEncode.h"
+//#include "CppRLEEncode.h"
 
 typedef void(_stdcall* RLEEncode)(const u8*, u8*, u64&, u64&, u64&, u64, u64);
 

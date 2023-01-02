@@ -6,11 +6,11 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <ui_mainwindow.h>
 
 #include "globals.h"
 #include "RLECompression.h"
 #include "bmp.h"
-#include "file.h"   // should be removed
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,8 +20,8 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    QString file_path;
-    QString file_name;
+    QString filePath;
+    QString fileName;
     QFile file;
 
     kp::BitMap* ptr_bmp_file; // bmp file to compress
@@ -30,13 +30,16 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
 
-    [[nodiscard]] std::string getFilePath() const { return file_path.toStdString(); }
+    [[nodiscard]] std::string getFilePath() const { return filePath.toStdString(); }
 
 private slots:
 
     void on_OpenFileButton_clicked();
 
     void on_compressPushButton_clicked();
+
+
+    void on_threadNumVerticalSlider_valueChanged(int value);
 
 private:
     Ui::MainWindow *ui;
