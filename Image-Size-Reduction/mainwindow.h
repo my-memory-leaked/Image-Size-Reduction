@@ -24,7 +24,7 @@ class MainWindow : public QMainWindow
     QString fileName;
     QFile file;
 
-    kp::BitMap* ptr_bmp_file; // bmp file to compress
+    kp::BitMap* ptrBmpFile; // bmp file to compress
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -37,7 +37,6 @@ private slots:
     void on_OpenFileButton_clicked();
 
     void on_compressPushButton_clicked();
-
 
     void on_threadNumVerticalSlider_valueChanged(int value);
 

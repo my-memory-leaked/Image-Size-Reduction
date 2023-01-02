@@ -13,13 +13,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 MainWindow::~MainWindow()
 {
     delete ui;
-    if(!ptr_bmp_file)
-        delete ptr_bmp_file;
+    if(!ptrBmpFile)
+        delete ptrBmpFile;
 }
 
-
-
-// TODO clean this code below
 void MainWindow::on_OpenFileButton_clicked()
 {
     // Gets pull path of the chosen file
@@ -41,7 +38,8 @@ void MainWindow::on_OpenFileButton_clicked()
     orgPicPixmap.load(filePath);
     orgPicPixmap.scaled(ui->OriginalPicture->height(), ui->OriginalPicture->width());
 
-    ui->OriginalPicture->setPixmap(orgPicPixmap.scaled(ui->OriginalPicture->height(), ui->OriginalPicture->width(), Qt::KeepAspectRatio));
+    ui->OriginalPicture->setPixmap(orgPicPixmap.scaled(ui->OriginalPicture->height(), 
+                                   ui->OriginalPicture->width(), Qt::KeepAspectRatio));
     ui->OriginalPicture->setMask(orgPicPixmap.mask());
 
 }
@@ -50,16 +48,29 @@ void MainWindow::on_OpenFileButton_clicked()
 void MainWindow::on_compressPushButton_clicked()
 {
     double compressionTimeStart = GetTickCount();
-    ptr_bmp_file = new kp::BitMap(getFilePath()); // old bitmap
-    double timeElapsed = GetTickCount() - compressionTimeStart;
-    ui->compressionTimeElapsedLabel->setText(QString::number(timeElapsed) + " ms");
+    // Compress
+    if(ui->assemblerButton->isChecked() || ui->CButton->isChecked())
+    {
+        // TODO add compression selection there
 
-    QPixmap resizedPixmap;
-    resizedPixmap.load(ptr_bmp_file->getFileDestination().data());
-    resizedPixmap.scaled(ui->ResizedPicture->height(), ui->ResizedPicture->width());
+        ptrBmpFile = new kp::BitMap(getFilePath());
 
-    ui->ResizedPicture->setPixmap(resizedPixmap.scaled(ui->ResizedPicture->height(), ui->ResizedPicture->width(), Qt::KeepAspectRatio));
-    ui->ResizedPicture->setMask(resizedPixmap.mask());
+        double timeElapsed = GetTickCount() - compressionTimeStart;
+        ui->compressionTimeElapsedLabel->setText(QString::number(timeElapsed) + " ms");
+
+        QPixmap resizedPixmap;
+        resizedPixmap.load(ptrBmpFile->getFileDestination().data());
+        resizedPixmap.scaled(ui->ResizedPicture->height(), ui->ResizedPicture->width());
+
+        ui->ResizedPicture->setPixmap(resizedPixmap.scaled(ui->ResizedPicture->height(), 
+                                      ui->ResizedPicture->width(), Qt::KeepAspectRatio));
+        ui->ResizedPicture->setMask(resizedPixmap.mask());
+    }
+    else
+    {
+        QMessageBox::information(this,
+                                 "Error", "Select compressing method!");
+    }
 }
 
 
