@@ -171,8 +171,11 @@ void BitMap::writeCompressedBMP()
 	//}
 
 	// Write compressed pixels
-	if (p_compressedData != nullptr)
-		fwrite(p_compressedData, sizeof(u8), p_totalCompressedDataSize, ptrFileOutput);
+	#pragma omp parallel num_threads(p_numOfThreads)
+	{
+		if (p_compressedData != nullptr)
+			fwrite(p_compressedData, sizeof(u8), p_totalCompressedDataSize, ptrFileOutput);
+	}
 	
 	fclose(ptrFileOutput);
 }

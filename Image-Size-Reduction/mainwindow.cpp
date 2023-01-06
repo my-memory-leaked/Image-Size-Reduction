@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <thread>
+#include <chrono>
 
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -52,13 +53,16 @@ void MainWindow::on_compressPushButton_clicked()
     {
         try
         {
-            double compressionTimeStart = GetTickCount();
+            u64 rendertime = 0;
+            const auto start = std::chrono::high_resolution_clock::now();
 
             ptrBmpFile = new kp::BitMap(ui, getFilePath());
+    
+            const auto duration = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - start);
+            rendertime = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
 
-            double timeElapsed = GetTickCount() - compressionTimeStart;
+            ui->compressionTimeElapsedLabel->setText(QString::number(rendertime) + "ms");
 
-            ui->compressionTimeElapsedLabel->setText(QString::number(timeElapsed) + " ms");
 
             QPixmap resizedPixmap;
             resizedPixmap.load(ptrBmpFile->getFileDestination().data());
