@@ -54,7 +54,7 @@ void MainWindow::on_compressPushButton_clicked()
         {
             double compressionTimeStart = GetTickCount();
 
-            ptrBmpFile = new kp::BitMap(getFilePath());
+            ptrBmpFile = new kp::BitMap(ui, getFilePath());
 
             double timeElapsed = GetTickCount() - compressionTimeStart;
 

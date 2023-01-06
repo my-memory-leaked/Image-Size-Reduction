@@ -2,8 +2,7 @@
 
 #include <globals.h>
 #include <string>
-#include <stdexcept>
-
+#include <ui_mainwindow.h>
 
 typedef void(_stdcall* RLEEncode)(const u8*, u8*, u64&, u64&, u64&, u64, u64);
 
@@ -107,9 +106,12 @@ namespace kp
 		/// Function Pointer
 		RLEEncode AsmRLEEncode = nullptr;
 
+		/// Number of threads
+		u16 p_numOfThreads = 0;
+
 	public:
 
-	    BitMap(const std::string& file_path);
+	    BitMap(Ui::MainWindow* ui, const std::string& file_path);
 	    ~BitMap();
 
 	    bool read(const std::string& file_path);
@@ -117,7 +119,7 @@ namespace kp
 
 	    void changeDestFileName(const std::string& file_path);
 
-		bool compressRLE();
+		bool compressRLE(Ui::MainWindow* ui);
 
 	    void writeCompressedBMP();
 

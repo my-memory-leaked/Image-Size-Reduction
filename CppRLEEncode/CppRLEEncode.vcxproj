@@ -119,7 +119,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>call copy $(SolutionDir)\x64\Debug\CppRLEEncode.dll $(SolutionDir)\Image-Size-Reduction\debug\CppRLEEncode.dll</Command>
+      <Command>call copy $(SolutionDir)x64\Debug\CppRLEEncode.dll $(SolutionDir)Image-Size-Reduction\debug\CppRLEEncode.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -141,7 +141,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>call copy $(SolutionDir)\x64\Release\CppRLEEncode.dll $(SolutionDir)\Image-Size-Reduction\release\CppRLEEncode.dll</Command>
+      <Command>call copy $(SolutionDir)x64\Release\CppRLEEncode.dll $(SolutionDir)Image-Size-Reduction\release\CppRLEEncode.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -1,19 +1,22 @@
 #include <bmp.h>
-#include "../CppRLEEncode/CppRLEEncode.h"
+#include <omp.h>
+#include <QMutex>
+#include "CppRLEEncode.h"
+#include <mutex>
 using namespace kp;
 
-#define ASM
-
-BitMap::BitMap(const std::string& filePath)
+BitMap::BitMap(Ui::MainWindow* ui, const std::string& filePath)
 {
 	if (filePath.length() == 0)
 		throw "No file selected!";
+
+	p_numOfThreads = static_cast<u16>(ui->threadNumberLabel->text().toInt());
 
 	AsmRLEEncode = (RLEEncode)GetProcAddress(LoadLibrary(TEXT(ASM_DLL_RLE_LIBRARY_PATH)),
 		RLE_COMPRESSION_FUNCTION_NAME_DLL);
 
 	changeDestFileName(filePath);
-	if (read(filePath) && compressRLE())
+	if (read(filePath) && compressRLE(ui))
 		writeCompressedBMP();
 }
 
@@ -103,7 +106,10 @@ bool BitMap::read(const std::string& file_path)
 	p_pixelByteData = (u8*)malloc(p_pixelSize * sizeof(u8));
 
 	// Read all of the pixels
-	fread(p_pixelByteData, sizeof(u8), p_pixelSize, ptrFileInput);
+	#pragma omp parallel num_threads(p_numOfThreads)
+	{
+		fread(p_pixelByteData, sizeof(u8), p_pixelSize, ptrFileInput);
+	}
 
 	fclose(ptrFileInput);
 	return true;
@@ -171,7 +177,7 @@ void BitMap::writeCompressedBMP()
 	fclose(ptrFileOutput);
 }
 
-bool BitMap::compressRLE()
+bool BitMap::compressRLE(Ui::MainWindow* ui)
 {
 	p_compressedData = (u8*)malloc(p_pixelSize * sizeof(u8) * 2);
 	if (!p_compressedData)
@@ -186,24 +192,20 @@ bool BitMap::compressRLE()
 	p_totalCompressedDataSize = 0;	// total size of compressed data
 	u64 currentElement = 0;
 
-	// Padding will be added later
-	//const int paddingAmount = (4 - (p_bmpInfoHeader.width * 3) % 4) % 4;
-	//u32 padding = p_bmpInfoHeader.width % 4;
-	//if (padding != 0) 
-	//	padding = 4 - padding;
 
 	for (u64 Y = 0; Y < p_bmpInfoHeader.height; Y++)
 	{
 		for (u64 X = 0; X < p_bmpInfoHeader.width; X++)
 		{
-
-#ifdef ASM
+			if (ui->assemblerButton->isChecked())
+			{
+				AsmRLEEncode(inp, out, p_totalCompressedDataSize, currentElement, X, p_bmpInfoHeader.width, Y);	
+			}
+			else if (ui->CButton->isChecked())
+			{		
+				CppRLEEncode(inp, out, p_totalCompressedDataSize, currentElement, X, p_bmpInfoHeader.width, Y);	
+			}
 			
-			AsmRLEEncode(inp, out, p_totalCompressedDataSize, currentElement, X, p_bmpInfoHeader.width, Y);
-#else
-			CppRLEEncode(inp, out, p_totalCompressedDataSize, currentElement, X, p_bmpInfoHeader.width, Y);
-#endif
-
 		}
 		out[p_totalCompressedDataSize++] = 0x00;
 
@@ -215,7 +217,7 @@ bool BitMap::compressRLE()
 		{
 			out[p_totalCompressedDataSize++] = 0x00;
 		}	// EOL 
-		
 	}
+	
 	return true;
 }
