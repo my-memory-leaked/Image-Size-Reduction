@@ -1,50 +1,47 @@
 #include <bmp.h>
+#include "../CppRLEEncode/CppRLEEncode.h"
 using namespace kp;
 
-BitMap::BitMap(const std::string& file_path)
+#define ASM
+
+BitMap::BitMap(const std::string& filePath)
 {
+	if (filePath.length() == 0)
+		throw "No file selected!";
 
 	AsmRLEEncode = (RLEEncode)GetProcAddress(LoadLibrary(TEXT(ASM_DLL_RLE_LIBRARY_PATH)),
-	                                                     RLE_COMPRESSION_FUNCTION_NAME_DLL);
+		RLE_COMPRESSION_FUNCTION_NAME_DLL);
 
-	changeDestFileName(file_path);
-	read(file_path);
-
-	compressRLE();
-	writeCompressedBMP();
+	changeDestFileName(filePath);
+	if (read(filePath) && compressRLE())
+		writeCompressedBMP();
 }
 
-BitMap::~BitMap() {
-
-	// TODO check if it is allocated and then delete from heap
+BitMap::~BitMap()
+{
 	if (p_pixelByteData)
-	{
-	free(p_pixelByteData);
-
-	}
-
+		free(p_pixelByteData);
 	if (p_compressedData)
 		free(p_compressedData);
-
-
 	if (p_pallet)
 		free(p_pallet);
-
 }
 
 // check transparent images
 bool BitMap::read(const std::string& file_path)
 {
-
 	FILE* ptrFileInput;
-	if(fopen_s(&ptrFileInput, file_path.c_str(), READ_BINARY))
-		throw std::invalid_argument("Input file opening failed");
+	if (fopen_s(&ptrFileInput, file_path.c_str(), READ_BINARY))
+	{
+		throw "Input file opening failed";
+		return false;
+	}
 
 	if (!ptrFileInput)	// When there is no file or bad filename
-		throw std::bad_alloc();
-
-	// TODO check if it is windows file
-	// also add if statements below
+	{
+		throw "Memory allocation error!";
+		return false;
+	}
 
 	// Reading file header
 	fread( &p_bmpFileHeader.file_type, sizeof(u16), 1, ptrFileInput );
@@ -67,22 +64,21 @@ bool BitMap::read(const std::string& file_path)
 	fread( &p_bmpInfoHeader.colors_important, sizeof(u32), 1, ptrFileInput );
 
 	// BMP has to be uncompressed and 8bit
-	//if (bmp_info_header.compression != 0 || bmp_info_header.bit_count != 8 || bmp_info_header.bit_count != 4)
-	//{
-	//	throw std::bad_alloc();
-	//	return false;
-	//}
-
-	if (p_bmpInfoHeader.size != 0x28 || p_bmpFileHeader.file_type != 0x4d42)
-		return false;               // others than windows bitmaps are not supported
-	if (p_bmpInfoHeader.bit_count == 24)
-		return false;               // 24 bit bitmaps cannot be compressed
-	if (p_bmpInfoHeader.compression != 0)
-		return false;               // only uncompressed bitmaps may be compressed
-
+	if (p_bmpInfoHeader.compression != 0 || p_bmpInfoHeader.bit_count != 8 ||
+		p_bmpInfoHeader.size != 0x28 || p_bmpFileHeader.file_type != 0x4d42) // others than windows bitmaps are not supported
+	{
+		throw "Wrong file selected";
+		return false;
+	}
 
 	// Skipping data from the beginning to the start offset
 	p_pallet = (u8*)malloc(p_bmpFileHeader.data_offset - SIZE_OF_FILE_HEADER);
+	if (!p_pallet)
+	{
+		throw "Memory allocation error!";
+		return false;
+	}
+
 	u64 it;
 	for (it = 0; it < (p_bmpFileHeader.data_offset - SIZE_OF_FILE_HEADER) / PREFIX_KILO; it++)
 	{
@@ -92,14 +88,12 @@ bool BitMap::read(const std::string& file_path)
 	// Read if there is some rest of it
 	fread(p_pallet + it * PREFIX_KILO, 1, (p_bmpFileHeader.data_offset - SIZE_OF_FILE_HEADER) % PREFIX_KILO, ptrFileInput);
 
-
 	// Second way of getting pallet
 	/*p_palletSize = bmp_file_header.data_offset - (sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER));
 	p_pallet = (u8*)malloc(p_palletSize);
 	fseek(ptrFileInput, p_palletSize, SEEK_SET);
 	fread(&p_pallet, sizeof(u8), p_palletSize - 1, ptrFileInput);
 	*/
-
 
 	// Calculate size of pixels
 	p_pixelSize = p_bmpFileHeader.file_size - p_bmpFileHeader.data_offset;
@@ -132,13 +126,13 @@ void BitMap::changeDestFileName( const std::string& file_path )
 void BitMap::writeCompressedBMP()
 {
 	// Update the header info
-	p_bmpInfoHeader.size_image = p_totalCompressedDataSize;
-	p_bmpFileHeader.file_size = p_bmpFileHeader.data_offset + p_totalCompressedDataSize;
+	p_bmpInfoHeader.size_image = static_cast<u32>(p_totalCompressedDataSize);
+	p_bmpFileHeader.file_size = static_cast<u32>(p_bmpFileHeader.data_offset + p_totalCompressedDataSize);
 	p_bmpInfoHeader.compression = 0x0001;
 
 	// Open output file
 	FILE* ptrFileOutput;
-	if(fopen_s(&ptrFileOutput, p_fileDestination.c_str(), WRITE_BINARY))
+	if (fopen_s(&ptrFileOutput, p_fileDestination.c_str(), WRITE_BINARY))
 		throw std::invalid_argument("Output file creation failed");
 
 	// Write file header
@@ -173,15 +167,18 @@ void BitMap::writeCompressedBMP()
 	// Write compressed pixels
 	if (p_compressedData != nullptr)
 		fwrite(p_compressedData, sizeof(u8), p_totalCompressedDataSize, ptrFileOutput);
-
-
+	
 	fclose(ptrFileOutput);
-
 }
 
-void BitMap::compressRLE()
+bool BitMap::compressRLE()
 {
 	p_compressedData = (u8*)malloc(p_pixelSize * sizeof(u8) * 2);
+	if (!p_compressedData)
+	{
+		throw "Memory allocation error!";
+		return false; 
+	}
 
 	const u8* inp = p_pixelByteData;	// input buffer
 	u8* out = p_compressedData;	// output buffer
@@ -201,6 +198,7 @@ void BitMap::compressRLE()
 		{
 
 #ifdef ASM
+			
 			AsmRLEEncode(inp, out, p_totalCompressedDataSize, currentElement, X, p_bmpInfoHeader.width, Y);
 #else
 			CppRLEEncode(inp, out, p_totalCompressedDataSize, currentElement, X, p_bmpInfoHeader.width, Y);
@@ -216,11 +214,8 @@ void BitMap::compressRLE()
 		else
 		{
 			out[p_totalCompressedDataSize++] = 0x00;
-		}
-		// EOL 
+		}	// EOL 
+		
 	}
-
-	//// TODO Add compression rate later
-	////printf(stdout, "Compression ratio = %f%%\n", 100.0 - (image->startOffset + total) * 100.0 / image->size);
-
+	return true;
 }

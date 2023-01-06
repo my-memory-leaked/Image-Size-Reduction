@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="OpenFileButton">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>30</y>
+      <x>10</x>
+      <y>20</y>
       <width>80</width>
       <height>21</height>
      </rect>
@@ -30,8 +30,8 @@
    <widget class="QLabel" name="OpenedFileLabel">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>30</y>
+      <x>10</x>
+      <y>0</y>
       <width>151</width>
       <height>16</height>
      </rect>
@@ -57,7 +57,7 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>380</y>
+      <y>370</y>
       <width>80</width>
       <height>18</height>
      </rect>
@@ -82,8 +82,8 @@
    <widget class="QSlider" name="threadNumVerticalSlider">
     <property name="geometry">
      <rect>
-      <x>744</x>
-      <y>120</y>
+      <x>700</x>
+      <y>140</y>
       <width>16</width>
       <height>160</height>
      </rect>
@@ -101,9 +101,9 @@
    <widget class="QLabel" name="threadInfNumLabel">
     <property name="geometry">
      <rect>
-      <x>680</x>
-      <y>280</y>
-      <width>71</width>
+      <x>660</x>
+      <y>110</y>
+      <width>91</width>
       <height>20</height>
      </rect>
     </property>
@@ -115,9 +115,9 @@
     <property name="geometry">
      <rect>
       <x>750</x>
-      <y>280</y>
+      <y>110</y>
       <width>37</width>
-      <height>12</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -127,9 +127,9 @@
    <widget class="QLabel" name="compressionTimeLabel">
     <property name="geometry">
      <rect>
-      <x>530</x>
-      <y>340</y>
-      <width>91</width>
+      <x>420</x>
+      <y>380</y>
+      <width>101</width>
       <height>20</height>
      </rect>
     </property>
@@ -140,10 +140,10 @@
    <widget class="QLabel" name="compressionTimeElapsedLabel">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>370</y>
+      <x>520</x>
+      <y>381</y>
       <width>37</width>
-      <height>12</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -153,7 +153,7 @@
    <widget class="QRadioButton" name="CButton">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>170</x>
       <y>390</y>
       <width>69</width>
       <height>18</height>
@@ -169,9 +169,9 @@
    <widget class="QRadioButton" name="assemblerButton">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>170</x>
       <y>370</y>
-      <width>69</width>
+      <width>81</width>
       <height>18</height>
      </rect>
     </property>
@@ -189,7 +189,7 @@
      <x>0</x>
      <y>0</y>
      <width>908</width>
-     <height>17</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

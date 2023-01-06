@@ -3,7 +3,7 @@
 #include <globals.h>
 #include <string>
 #include <stdexcept>
-//#include "CppRLEEncode.h"
+
 
 typedef void(_stdcall* RLEEncode)(const u8*, u8*, u64&, u64&, u64&, u64, u64);
 
@@ -104,6 +104,7 @@ namespace kp
 	    /// Changed filename to one signalizing compression
 	    std::string p_fileDestination;
 
+		/// Function Pointer
 		RLEEncode AsmRLEEncode = nullptr;
 
 	public:
@@ -116,7 +117,7 @@ namespace kp
 
 	    void changeDestFileName(const std::string& file_path);
 
-	    void compressRLE();
+		bool compressRLE();
 
 	    void writeCompressedBMP();
 

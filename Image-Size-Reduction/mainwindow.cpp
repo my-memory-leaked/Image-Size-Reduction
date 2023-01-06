@@ -47,24 +47,33 @@ void MainWindow::on_OpenFileButton_clicked()
 
 void MainWindow::on_compressPushButton_clicked()
 {
-    double compressionTimeStart = GetTickCount();
     // Compress
     if(ui->assemblerButton->isChecked() || ui->CButton->isChecked())
     {
-        // TODO add compression selection there
+        try
+        {
+            double compressionTimeStart = GetTickCount();
 
-        ptrBmpFile = new kp::BitMap(getFilePath());
+            ptrBmpFile = new kp::BitMap(getFilePath());
 
-        double timeElapsed = GetTickCount() - compressionTimeStart;
-        ui->compressionTimeElapsedLabel->setText(QString::number(timeElapsed) + " ms");
+            double timeElapsed = GetTickCount() - compressionTimeStart;
 
-        QPixmap resizedPixmap;
-        resizedPixmap.load(ptrBmpFile->getFileDestination().data());
-        resizedPixmap.scaled(ui->ResizedPicture->height(), ui->ResizedPicture->width());
+            ui->compressionTimeElapsedLabel->setText(QString::number(timeElapsed) + " ms");
 
-        ui->ResizedPicture->setPixmap(resizedPixmap.scaled(ui->ResizedPicture->height(), 
-                                      ui->ResizedPicture->width(), Qt::KeepAspectRatio));
-        ui->ResizedPicture->setMask(resizedPixmap.mask());
+            QPixmap resizedPixmap;
+            resizedPixmap.load(ptrBmpFile->getFileDestination().data());
+            resizedPixmap.scaled(ui->ResizedPicture->height(), ui->ResizedPicture->width());
+
+            ui->ResizedPicture->setPixmap(resizedPixmap.scaled(ui->ResizedPicture->height(),
+                                          ui->ResizedPicture->width(), Qt::KeepAspectRatio));
+            ui->ResizedPicture->setMask(resizedPixmap.mask());
+        }
+        catch (const char* errorMessage)
+        {
+            QMessageBox::information(this,
+                "Error", errorMessage);
+        }
+
     }
     else
     {
