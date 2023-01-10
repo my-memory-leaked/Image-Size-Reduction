@@ -1,3 +1,15 @@
+;*****************************************************************
+; 
+; Author: Karol Pisarski
+; Date: 4.01.2023
+; Version: 1.0
+;
+; The goal of this project is to write an assembly language
+; procedure that compresses a file using a specific implementation
+; of algorithm. The procedure that uses this algorithm is then 
+; called from C++.
+;
+;*****************************************************************
 .code
 RLEEncode proc
 
