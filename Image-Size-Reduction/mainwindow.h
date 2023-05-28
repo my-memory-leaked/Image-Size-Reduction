@@ -9,7 +9,6 @@
 #include <ui_mainwindow.h>
 
 #include "globals.h"
-#include "RLECompression.h"
 #include "bmp.h"
 
 QT_BEGIN_NAMESPACE
