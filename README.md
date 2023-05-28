@@ -22,14 +22,13 @@ To build and run this project, ensure you have the following installed:
 - Visual studio with MSVC compiler.
 - Qt development environment.
 - OpenMP library for parallelization.
-- Assembler and linker to build the assembly DLL.
 
 ## Acknowledgments
 
 - The RLE compression algorithm used in this project is based on [Run-Length Encoding (RLE)](https://en.wikipedia.org/wiki/Run-length_encoding).
 - The Qt library provides an excellent framework for building cross-platform applications.
 - The OpenMP library enables parallel execution to boost performance.
-- Special thanks to the developers and contributors of all the open-source tools and libraries used in this project.
+- Using assembly language definitely slows down the program, but the gained knowledge is more valuable.
 
 ## License
 
