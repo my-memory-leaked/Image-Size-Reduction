@@ -8,12 +8,13 @@ This repository contains a C++ project that utilizes the Qt library for building
 ## Features
 
 - Graphical user interface for easy interaction.
+![image](https://github.com/my-memory-leaked/Image-Size-Reduction/assets/72348855/381b9be7-681f-4950-8914-1c55b2e48cb6)
+
 - RLE compression algorithm specifically designed for 8-bit BMP images.
 - Two DLLs for performance optimization:
   - The C++ DLL uses the OpenMP library to parallelize the compression process and leverage multiple CPU cores.
   - The assembly DLL provides optimized routines for faster execution.
-- Supports compressing multiple BMP images in batch mode.
-- Outputs the compressed images as a new file with the `.rle` extension.
+- Outputs the compressed images as a new file with the `.bmp` extension with rle compression information in bitmap file header.
 
 ## Prerequisites
 
